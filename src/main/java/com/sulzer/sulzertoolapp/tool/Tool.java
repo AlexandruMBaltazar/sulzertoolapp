@@ -1,6 +1,8 @@
 package com.sulzer.sulzertoolapp.tool;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.sulzer.sulzertoolapp.tool.annotation.UniqueAtmsNumber;
+import com.sulzer.sulzertoolapp.tool.annotation.UniqueToolNumber;
 import lombok.*;
 
 import javax.persistence.*;
@@ -22,6 +24,7 @@ public class Tool {
     private Long id;
 
     @NotBlank(message = "Tool Number is required")
+    @UniqueToolNumber
     @Column(unique = true)
     private String toolNumber;
 
@@ -38,7 +41,7 @@ public class Tool {
     private ToolAtms toolAtms;
 
     @NotBlank(message = "Tool ATMS Number is required")
-    @Valid
+    @UniqueAtmsNumber
     @Column(unique = true)
     private String toolAtmsNumber;
 
