@@ -4,6 +4,7 @@ import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { Button, Stack } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Link } from "react-router-dom";
+import moment from "moment";
 
 const Tools = () => {
   const [page, setPage] = useState(0);
@@ -21,8 +22,24 @@ const Tools = () => {
     { field: "tipRadius", headerName: "Tip Radius", width: 200 },
     { field: "length", headerName: "Length", width: 200 },
     { field: "comment", headerName: "Comment", width: 200 },
-    { field: "createdAt", headerName: "Created At", width: 200 },
-    { field: "updatedAt", headerName: "Updated At", width: 200 },
+    {
+      field: "createdAt",
+      headerName: "Created At",
+      width: 200,
+      renderCell: (params) =>
+        params.row.createdAt != -null
+          ? moment(params.row.createdAt).format("DD/MM/YYYY hh:mm:ss")
+          : "",
+    },
+    {
+      field: "updatedAt",
+      headerName: "Updated At",
+      width: 200,
+      renderCell: (params) =>
+        params.row.updatedAt !== null
+          ? moment(params.row.updatedAt).format("DD/MM/YYYY hh:mm:ss")
+          : "",
+    },
     {
       field: "actions",
       headerName: "Actions",
@@ -38,7 +55,12 @@ const Tools = () => {
           >
             Edit
           </Button>
-          <Button variant="outlined" color="error" startIcon={<DeleteIcon />}>
+          <Button
+            onClick={() => deleteTool(params.row.id)}
+            variant="outlined"
+            color="error"
+            startIcon={<DeleteIcon />}
+          >
             Delete
           </Button>
         </Stack>
@@ -46,19 +68,25 @@ const Tools = () => {
     },
   ];
   useEffect(() => {
-    const fetchTools = () => {
-      setIsLoading(true);
-      axios
-        .get(`/api/v1/tools?page=${page}&size=${pageSize}`)
-        .then((response) => {
-          setTools(response.data.content);
-          setRowCountState(response.data.totalElements);
-          setIsLoading(false);
-        });
-    };
-
     fetchTools();
   }, [page, pageSize]);
+
+  const fetchTools = () => {
+    setIsLoading(true);
+    axios
+      .get(`/api/v1/tools?page=${page}&size=${pageSize}`)
+      .then((response) => {
+        setTools(response.data.content);
+        setRowCountState(response.data.totalElements);
+        setIsLoading(false);
+      });
+  };
+
+  const deleteTool = (toolId) => {
+    axios.delete(`/api/v1/tools/${toolId}`).then((response) => {
+      fetchTools();
+    });
+  };
 
   return (
     <div style={{ margin: "5rem", height: 600 }}>
@@ -74,6 +102,7 @@ const Tools = () => {
       <div style={{ display: "flex", height: "100%" }}>
         <div style={{ flexGrow: 1 }}>
           <DataGrid
+            checkboxSelection={true}
             paginationMode="server"
             page={page}
             onPageChange={(newPage) => setPage(newPage)}

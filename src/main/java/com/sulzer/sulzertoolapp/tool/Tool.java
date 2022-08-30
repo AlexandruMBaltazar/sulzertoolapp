@@ -1,8 +1,6 @@
 package com.sulzer.sulzertoolapp.tool;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.sulzer.sulzertoolapp.tool.annotation.UniqueAtmsNumber;
-import com.sulzer.sulzertoolapp.tool.annotation.UniqueToolNumber;
+import com.sulzer.sulzertoolapp.tool.validation.annotation.Unique;
 import lombok.*;
 
 import javax.persistence.*;
@@ -10,7 +8,6 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @Entity
 @Getter
@@ -18,31 +15,39 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Unique.List({
+        @Unique(
+                uniqueField = "toolNumber",
+                idField = "id",
+                message = "Tool Number must be unique"
+        ),
+        @Unique(
+                uniqueField = "toolAtmsNumber",
+                idField = "id",
+                message = "Tool ATMS Number must be unique"
+        )
+})
 public class Tool {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
     @NotBlank(message = "Tool Number is required")
-    @UniqueToolNumber
-    @Column(unique = true)
+    @Valid
     private String toolNumber;
 
     @NotNull(message = "Tool Class is required")
-    @Valid
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private ToolClass toolClass;
 
     @NotNull(message = "Tool ATMS is required")
-    @Valid
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private ToolAtms toolAtms;
 
     @NotBlank(message = "Tool ATMS Number is required")
-    @UniqueAtmsNumber
-    @Column(unique = true)
+    @Valid
     private String toolAtmsNumber;
 
     private Double diameter;

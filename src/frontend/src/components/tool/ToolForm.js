@@ -13,8 +13,9 @@ import {
   Typography,
 } from "@mui/material";
 import axios from "axios";
-import { useState } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 const ToolForm = () => {
   const [toolForm, setToolForm] = useState({
@@ -27,11 +28,19 @@ const ToolForm = () => {
     length: null,
     comment: "",
   });
-
   const [errors, setErrors] = useState([]);
-
   const [pendingApiCall, setPendingApiCall] = useState(false);
+
+  let { id } = useParams();
   let navigate = useNavigate();
+
+  useEffect(() => {
+    if (id) {
+      axios.get(`/api/v1/tools/${id}`).then((response) => {
+        setToolForm({ ...response.data });
+      });
+    }
+  }, [id]);
 
   const onChange = (event) => {
     const { value, name } = event.target;
@@ -39,13 +48,6 @@ const ToolForm = () => {
       return {
         ...previousForm,
         [name]: value,
-      };
-    });
-
-    setErrors((previousErrors) => {
-      return {
-        ...previousErrors,
-        [name]: undefined,
       };
     });
   };
@@ -78,9 +80,9 @@ const ToolForm = () => {
             name="toolNumber"
             onChange={onChange}
             value={toolForm.toolNumber}
-            label={errors.toolNumber ? "Error" : "Tool No"}
-            error={errors.toolNumber ? true : false}
-            helperText={errors.toolNumber ?? ""}
+            label={errors.toolNumber || errors.tool ? "Error" : "Tool No"}
+            error={errors.toolNumber || errors.tool ? true : false}
+            helperText={(errors.toolNumber || errors.tool) ?? ""}
           />
           <FormControl sx={{ mt: 2 }} fullWidth required>
             <InputLabel>Tool Class</InputLabel>
@@ -127,9 +129,11 @@ const ToolForm = () => {
               required
               onChange={onChange}
               value={toolForm.toolAtmsNumber}
-              label={errors.toolAtmsNumber ? "Error" : "Tool ATMS No"}
-              error={errors.toolAtmsNumber ? true : false}
-              helperText={errors.toolAtmsNumber ?? ""}
+              label={
+                errors.toolAtmsNumber || errors.tool ? "Error" : "Tool ATMS No"
+              }
+              error={errors.toolAtmsNumber || errors.tool ? true : false}
+              helperText={(errors.toolAtmsNumber || errors.tool) ?? ""}
             />
           </Box>
         </Box>
@@ -146,6 +150,7 @@ const ToolForm = () => {
             }}
           >
             <TextField
+              id="outlined-number"
               type="number"
               name="diameter"
               sx={{ width: "50%" }}
@@ -157,8 +162,12 @@ const ToolForm = () => {
                   min: 0,
                 },
               }}
+              InputLabelProps={{
+                shrink: true,
+              }}
             />
             <TextField
+              id="outlined-number"
               type="number"
               name="tipRadius"
               sx={{ width: "50%" }}
@@ -170,8 +179,12 @@ const ToolForm = () => {
                   min: 0,
                 },
               }}
+              InputLabelProps={{
+                shrink: true,
+              }}
             />
             <TextField
+              id="outlined-number"
               type="number"
               name="length"
               sx={{ width: "50%" }}
@@ -182,6 +195,9 @@ const ToolForm = () => {
                 inputProps: {
                   min: 0,
                 },
+              }}
+              InputLabelProps={{
+                shrink: true,
               }}
             />
           </Box>
@@ -205,7 +221,7 @@ const ToolForm = () => {
         <Button onClick={() => navigate("/")} size="small">
           Cancel
         </Button>
-        <Button size="small" onClick={onSubmit}>
+        <Button size="small" onClick={onSubmit} disabled={pendingApiCall}>
           Save
         </Button>
       </CardActions>

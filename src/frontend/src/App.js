@@ -10,6 +10,7 @@ function App() {
       <Routes>
         <Route path="/" element={<ToolsPage />} />
         <Route path="/tools/create" element={<ToolsCreatePage />} />
+        <Route path="/tools/:id/edit" element={<ToolsCreatePage />} />
       </Routes>
     </div>
   );
