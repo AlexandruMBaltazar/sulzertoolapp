@@ -13,7 +13,7 @@ public class ToolService {
     private final ToolRepository toolRepository;
 
     public Page<Tool> getTools(Pageable pageable) {
-        return toolRepository.findAll(pageable);
+        return toolRepository.findByOrderByCreatedAtDesc(pageable);
     }
 
     public Tool getTool(Long id) {
