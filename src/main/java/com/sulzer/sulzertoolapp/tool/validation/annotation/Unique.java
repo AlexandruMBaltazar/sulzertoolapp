@@ -14,8 +14,8 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Constraint(validatedBy = UniqueValidator.class)
 public @interface Unique {
     String uniqueField();
-    String idField();
-
+    String idField() default "id";
+    String uniqueWithField() default "";
     String message() default "Value already exists. Please enter an unique value.";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};

@@ -16,6 +16,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
+import FormHelperText from "@mui/material/FormHelperText";
 
 const ToolForm = () => {
   const [toolForm, setToolForm] = useState({
@@ -108,20 +109,30 @@ const ToolForm = () => {
               gap: 1,
             }}
           >
-            <FormControl sx={{ width: "50%" }} required>
+            <FormControl
+              sx={{ width: "50%" }}
+              error={errors.toolAtmsNumber || errors.tool ? true : false}
+              required
+            >
               <InputLabel>Tool ATMS</InputLabel>
               <Select
                 required
                 name="toolAtms"
                 value={toolForm.toolAtms}
-                label="Tool ATMS"
                 onChange={onChange}
+                label={
+                  errors.toolAtmsNumber || errors.tool ? "Error" : "Tool ATMS"
+                }
               >
                 <MenuItem value={"PRETRN"}>PRETRN</MenuItem>
+                <MenuItem value={"PREDRL"}>PREDRL</MenuItem>
                 <MenuItem value={"PREMIL"}>PREMIL</MenuItem>
                 <MenuItem value={"PREBOR"}>PREBOR</MenuItem>
                 <MenuItem value={"PRETHD"}>PRETHD</MenuItem>
               </Select>
+              <FormHelperText>
+                {(errors.toolAtmsNumber || errors.tool) ?? ""}
+              </FormHelperText>
             </FormControl>
             <TextField
               sx={{ width: "50%" }}

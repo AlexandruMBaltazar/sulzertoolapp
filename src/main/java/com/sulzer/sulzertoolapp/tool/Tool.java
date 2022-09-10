@@ -18,13 +18,12 @@ import java.time.LocalDateTime;
 @Unique.List({
         @Unique(
                 uniqueField = "toolNumber",
-                idField = "id",
                 message = "Tool Number must be unique"
         ),
         @Unique(
                 uniqueField = "toolAtmsNumber",
-                idField = "id",
-                message = "Tool ATMS Number must be unique"
+                uniqueWithField = "toolAtms",
+                message = "Tool ATMS must be unique"
         )
 })
 public class Tool {

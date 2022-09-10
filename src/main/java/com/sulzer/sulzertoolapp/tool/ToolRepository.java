@@ -14,6 +14,6 @@ public interface ToolRepository extends JpaRepository<Tool, Long> {
     @Query(value = "select (count(t) > 0) from Tool t where t.toolNumber = :toolNumber and (:id is null or t.id not in (:id))")
     Boolean existsByToolNumber(@Param("toolNumber") String toolNumber, @Param("id") Long id);
 
-    @Query(value = "select (count(t) > 0) from Tool t where t.toolAtmsNumber = :toolAtmsNumber and (:id is null or t.id not in (:id))")
-    Boolean existsByToolAtmsNumber(@Param("toolAtmsNumber") String toolAtmsNumber, @Param("id") Long id);
+    @Query(value = "select (count(t) > 0) from Tool t where concat(t.toolAtms, t.toolAtmsNumber) = concat(:toolAtms, :toolAtmsNumber) and (:id is null or t.id not in (:id))")
+    Boolean existsByToolAtmsNumber(@Param("toolAtmsNumber") String toolAtmsNumber, @Param("toolAtms") String toolAtms, @Param("id") Long id);
 }

@@ -1,5 +1,5 @@
 package com.sulzer.sulzertoolapp.tool;
 
 public enum ToolAtms {
-    PRETRN, PREMIL, PREBOR, PRETHD
+    PRETRN, PREDRL, PREMIL, PREBOR, PRETHD
 }
